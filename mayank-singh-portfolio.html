@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mayank Singh | People Architect</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --ink: #FFFFFF;
+      --muted: #9CA3AF;
+      --accent: #4F46E5;
+      --neon: #00FF9C;
+      --zinc-950: #09090b;
+      --zinc-900: #18181b;
+      --zinc-800: #27272a;
+      --zinc-400: #a1a1aa;
+      --zinc-300: #d4d4d8;
+      --black: #000000;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .font-display { font-family: 'Outfit', sans-serif; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #1F1F1F; border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: #2F2F2F; }
+
+    /* CURSOR */
+    #cursor {
+      position: fixed; top: 0; left: 0;
+      width: 24px; height: 24px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+      display: none;
+    }
+    @media (min-width: 768px) { #cursor { display: block; } }
+    #cursor.hovering { width: 60px; height: 60px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 50;
+      background: rgba(10,10,10,0.5);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding: 24px 32px;
+      display: flex; justify-content: space-between; align-items: center;
+      animation: slideDown 0.8s cubic-bezier(0.33,1,0.68,1) both;
+    }
+    @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+    .nav-links {
+      display: none; gap: 48px;
+      font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.4em;
+      color: var(--muted);
+    }
+    @media (min-width: 768px) { .nav-links { display: flex; } }
+    .nav-links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: white; }
+    .nav-cta {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.4em;
+      background: white; color: black;
+      padding: 12px 24px; border-radius: 9999px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--neon); }
+
+    /* HERO */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      overflow: hidden; padding: 128px 32px 80px;
+    }
+    .hero-bg-text {
+      position: absolute; top: 50%; left: 0;
+      transform: translateY(-50%);
+      font-size: 30vw; font-weight: 900;
+      text-transform: uppercase; letter-spacing: -0.05em;
+      white-space: nowrap; opacity: 0.03;
+      pointer-events: none; user-select: none;
+      font-family: 'Outfit', sans-serif;
+      animation: scrollDrift 20s linear infinite;
+    }
+    @keyframes scrollDrift { from { transform: translateY(-50%) translateX(0); } to { transform: translateY(-50%) translateX(-10%); } }
+
+    .hero-glow {
+      position: absolute; border-radius: 50%;
+      background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+      filter: blur(80px); opacity: 0.15;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative; z-index: 10;
+      width: 100%; max-width: 1280px;
+      display: grid; grid-template-columns: 1fr;
+      gap: 48px; align-items: center;
+    }
+    @media (min-width: 768px) { .hero-content { grid-template-columns: 7fr 5fr; } }
+
+    .hero-eyebrow {
+      display: flex; gap: 16px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.4em;
+      color: var(--accent);
+      animation: fadeUp 0.8s ease both;
+    }
+    .hero-eyebrow span.slash { color: #27272a; }
+
+    .hero-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.5rem, 5.5vw, 5.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 1.05;
+      margin-top: 32px;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+    .hero-title .accent { color: var(--accent); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-card {
+      position: relative;
+      animation: fadeScale 1.5s cubic-bezier(0.33,1,0.68,1) 0.3s both;
+    }
+    @keyframes fadeScale {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .hero-img-wrap {
+      aspect-ratio: 4/5;
+      background: var(--zinc-900);
+      border-radius: 2rem;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .hero-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0.9; transition: transform 2s ease;
+    }
+    .hero-img-wrap:hover img { transform: scale(1.05); }
+    .hero-img-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, black, transparent 60%);
+      opacity: 0.6;
+    }
+    .hero-img-label-top {
+      position: absolute; top: 32px; right: 32px;
+      text-align: right;
+    }
+    .hero-img-label-top span:first-child { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4em; color: rgba(255,255,255,0.4); }
+    .hero-img-label-top span:last-child { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: white; }
+    .hero-img-label-bot {
+      position: absolute; bottom: 32px; left: 32px;
+    }
+    .hero-img-label-bot span:first-child { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4em; color: rgba(255,255,255,0.4); }
+    .hero-img-label-bot span:last-child { font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; color: var(--accent); }
+
+    .hero-deco-br {
+      position: absolute; bottom: -48px; right: -48px;
+      width: 192px; height: 192px;
+      border-right: 1px solid rgba(79,70,229,0.3);
+      border-bottom: 1px solid rgba(79,70,229,0.3);
+      border-radius: 0 0 3rem 0; pointer-events: none;
+    }
+    .hero-deco-tl {
+      position: absolute; top: -24px; left: -24px;
+      width: 96px; height: 96px;
+      border-left: 1px solid rgba(79,70,229,0.3);
+      border-top: 1px solid rgba(79,70,229,0.3);
+      border-radius: 2rem 0 0 0; pointer-events: none;
+    }
+
+    .scroll-hint {
+      position: absolute; bottom: 48px; left: 32px;
+      display: flex; align-items: center; gap: 16px;
+      color: var(--muted); font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.4em;
+    }
+    .scroll-line {
+      width: 48px; height: 1px;
+      background: var(--zinc-800); position: relative; overflow: hidden;
+    }
+    .scroll-line-inner {
+      position: absolute; top: 0; left: 0;
+      width: 33%; height: 100%;
+      background: var(--accent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine { 0% { left: -33%; } 100% { left: 100%; } }
+
+    /* SECTIONS */
+    section { padding: 128px 32px; }
+    .section-inner { max-width: 1280px; margin: 0 auto; }
+
+    .section-label {
+      display: block;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.3em;
+      color: var(--accent); margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+    }
+
+    /* PHILOSOPHY */
+    .philosophy { background: var(--zinc-950); }
+    .philosophy-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 48px; margin-top: 96px;
+    }
+    @media (min-width: 768px) { .philosophy-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .philosophy-card {
+      padding: 40px;
+      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.02);
+      border-radius: 24px;
+      transition: background 0.3s;
+    }
+    .philosophy-card:hover { background: rgba(255,255,255,0.04); }
+    .philosophy-icon {
+      width: 56px; height: 56px;
+      background: rgba(79,70,229,0.1);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 32px;
+      transition: transform 0.3s;
+    }
+    .philosophy-card:hover .philosophy-icon { transform: scale(1.1); }
+    .philosophy-icon svg { width: 24px; height: 24px; color: var(--accent); stroke: var(--accent); }
+    .philosophy-card h3 { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; }
+    .philosophy-card p { color: var(--muted); line-height: 1.7; }
+
+    /* IMPACT */
+    .impact-item {
+      padding: 96px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: grid; grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    @media (min-width: 768px) { .impact-item { grid-template-columns: 4fr 8fr; } }
+    .impact-item:hover .impact-title { color: var(--accent); }
+    .impact-company { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4em; color: var(--accent); margin-bottom: 8px; }
+    .impact-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 900; text-transform: uppercase;
+      line-height: 1.1; transition: color 0.3s;
+    }
+    .impact-desc { font-size: 1.2rem; color: var(--zinc-300); font-weight: 300; line-height: 1.7; margin-bottom: 32px; }
+    .impact-points { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    @media (min-width: 768px) { .impact-points { grid-template-columns: 1fr 1fr; } }
+    .impact-point { display: flex; gap: 16px; align-items: flex-start; }
+    .impact-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; margin-top: 8px; }
+    .impact-point p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    /* TIMELINE */
+    .timeline-bg { background: var(--black); }
+    .timeline { position: relative; }
+    .timeline-line {
+      display: none;
+      position: absolute; left: 50%; top: 0; bottom: 0;
+      width: 1px; background: rgba(255,255,255,0.05);
+      transform: translateX(-50%);
+    }
+    @media (min-width: 768px) { .timeline-line { display: block; } }
+    .timeline-items { display: flex; flex-direction: column; gap: 48px; }
+
+    .timeline-item {
+      position: relative;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .timeline-item { flex-direction: row; gap: 0; }
+      .timeline-item.even { flex-direction: row-reverse; }
+    }
+
+    .timeline-dot {
+      display: none;
+      position: absolute; left: 50%; top: 8px;
+      width: 12px; height: 12px;
+      background: var(--accent); border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 15px rgba(79,70,229,0.5);
+      z-index: 1;
+    }
+    @media (min-width: 768px) { .timeline-dot { display: block; } }
+
+    .timeline-left, .timeline-right {
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      .timeline-left, .timeline-right { width: 50%; }
+      .timeline-left { padding-right: 48px; text-align: right; }
+      .timeline-right { padding-left: 48px; }
+      .timeline-item.even .timeline-left { text-align: left; }
+      .timeline-item.even .timeline-right { text-align: right; }
+    }
+
+    .timeline-year { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--accent); display: block; margin-bottom: 4px; }
+    .timeline-company { font-size: 1.4rem; font-weight: 700; color: white; margin-bottom: 8px; }
+    .timeline-role { font-size: 1rem; font-weight: 500; color: var(--zinc-300); margin-bottom: 8px; }
+    .timeline-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 360px; }
+    @media (min-width: 768px) { .timeline-left .timeline-desc { margin-left: auto; } }
+
+    /* TRANSFORMATIONS */
+    .transformations-bg { background: var(--zinc-950); }
+    .transform-list {
+      display: flex; flex-direction: column;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 48px; overflow: hidden;
+      margin-top: 96px;
+    }
+    .transform-item {
+      position: relative; overflow: hidden;
+      padding: 80px;
+      background: var(--zinc-950);
+      display: flex; flex-direction: column; gap: 48px;
+      transition: background 0.7s;
+    }
+    @media (min-width: 768px) { .transform-item { flex-direction: row; justify-content: space-between; align-items: center; } }
+    .transform-item:hover { background: rgba(79,70,229,0.05); }
+    .transform-item-body { max-width: 640px; }
+    .transform-item h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 900; text-transform: uppercase;
+      margin-bottom: 24px;
+      transition: color 0.3s;
+    }
+    .transform-item:hover h3 { color: var(--accent); }
+    .transform-item p { font-size: 1.1rem; color: var(--muted); line-height: 1.7; }
+    .transform-outcome {
+      padding: 32px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px; flex-shrink: 0;
+      max-width: 320px;
+      transition: border-color 0.3s;
+    }
+    .transform-item:hover .transform-outcome { border-color: rgba(79,70,229,0.3); }
+    .transform-outcome-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4em; color: var(--accent); display: block; margin-bottom: 8px; }
+    .transform-outcome p { font-size: 1rem; font-weight: 500; color: white; line-height: 1.5; }
+    .transform-bg-text {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20vw; font-weight: 900; text-transform: uppercase;
+      white-space: nowrap; font-family: 'Outfit', sans-serif;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.7s;
+    }
+    .transform-item:hover .transform-bg-text { opacity: 0.02; }
+
+    /* CAPABILITIES */
+    .capabilities-bg { background: var(--zinc-950); position: relative; overflow: hidden; }
+    .cap-glow {
+      position: absolute; top: 0; right: 0;
+      width: 500px; height: 500px;
+      background: rgba(79,70,229,0.05);
+      filter: blur(120px); border-radius: 50%;
+      pointer-events: none;
+    }
+    .cap-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 24px; overflow: hidden;
+      margin-top: 96px; position: relative; z-index: 1;
+    }
+    @media (min-width: 768px) { .cap-grid { grid-template-columns: 1fr 1fr; } }
+    @media (min-width: 1024px) { .cap-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+    .cap-card {
+      padding: 48px;
+      background: var(--zinc-950);
+      min-height: 350px;
+      display: flex; flex-direction: column;
+      justify-content: space-between;
+      position: relative; overflow: hidden;
+      cursor: default;
+    }
+    .cap-number {
+      font-family: 'Outfit', sans-serif;
+      font-size: 4rem; font-weight: 900;
+      color: var(--zinc-800);
+      transition: color 0.3s;
+    }
+    .cap-card:hover .cap-number { color: rgba(79,70,229,0.2); }
+    .cap-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      line-height: 1.3; margin-top: 32px;
+      transition: color 0.3s;
+      transform: translateY(0); transition: transform 0.5s, color 0.3s;
+    }
+    .cap-card:hover .cap-title { transform: translateY(-16px); color: var(--accent); }
+    .cap-desc {
+      font-size: 14px; color: var(--muted); line-height: 1.7;
+      opacity: 0; transform: translateY(32px);
+      transition: opacity 0.5s, transform 0.5s;
+      position: absolute; bottom: 48px; left: 48px; right: 48px;
+    }
+    .cap-card:hover .cap-desc { opacity: 1; transform: translateY(0); }
+    .cap-line {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px; background: var(--accent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.5s;
+    }
+    .cap-card:hover .cap-line { transform: scaleX(1); }
+
+    /* EDUCATION */
+    .education-bg { background: var(--zinc-950); }
+    .edu-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 1px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 48px; overflow: hidden;
+      margin-top: 96px;
+    }
+    @media (min-width: 768px) { .edu-grid { grid-template-columns: 1fr 1fr; } }
+    .edu-card {
+      padding: 48px;
+      background: var(--zinc-950);
+      transition: background 0.3s;
+    }
+    .edu-card:hover { background: rgba(79,70,229,0.05); }
+    .edu-year { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.2rem; color: var(--accent); display: block; margin-bottom: 8px; }
+    .edu-institution { font-size: 1.4rem; font-weight: 700; color: white; margin-bottom: 4px; }
+    .edu-degree { font-size: 1rem; font-weight: 500; color: var(--zinc-400); margin-bottom: 16px; }
+    .edu-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 400px; }
+
+    /* RECOMMENDATIONS */
+    .recs-bg { background: var(--black); }
+    .recs-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 48px; margin-top: 96px;
+    }
+    @media (min-width: 768px) { .recs-grid { grid-template-columns: 1fr 1fr; } }
+    .rec-card {
+      padding: 48px;
+      background: rgba(24,24,27,0.5);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 48px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      transition: border-color 0.3s;
+    }
+    .rec-card:hover { border-color: rgba(79,70,229,0.3); }
+    .rec-dots { display: flex; gap: 6px; margin-bottom: 32px; }
+    .rec-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    .rec-text {
+      font-size: 1.1rem; color: var(--zinc-300); font-weight: 300;
+      line-height: 1.8; font-style: italic; margin-bottom: 48px;
+    }
+    .rec-name { font-weight: 700; color: white; font-size: 14px; }
+    .rec-role { font-size: 12px; color: var(--muted); }
+
+    /* CONTACT */
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 96px;
+    }
+    @media (min-width: 768px) { .contact-grid { grid-template-columns: 1fr 1fr; } }
+    .contact-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(3rem, 6vw, 6rem);
+      font-weight: 900; text-transform: uppercase;
+      letter-spacing: -0.05em; line-height: 0.9;
+      margin-bottom: 32px;
+    }
+    .contact-sub { font-size: 1.2rem; color: var(--muted); line-height: 1.7; max-width: 400px; }
+    .contact-socials { display: flex; gap: 32px; margin-top: 64px; }
+    .contact-social {
+      width: 56px; height: 56px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: white;
+      transition: background 0.3s;
+    }
+    .contact-social:hover { background: var(--accent); }
+    .contact-social svg { width: 20px; height: 20px; stroke: currentColor; }
+
+    .contact-form { display: flex; flex-direction: column; gap: 48px; }
+    .form-field { position: relative; }
+    .form-field input, .form-field textarea {
+      width: 100%; background: transparent;
+      border: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 0; color: white; font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      outline: none; resize: none;
+      transition: border-color 0.3s;
+    }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: #3f3f46; }
+    .form-field input:focus, .form-field textarea:focus { border-color: var(--accent); }
+    .form-field-line {
+      position: absolute; bottom: 0; left: 0;
+      height: 2px; width: 0;
+      background: var(--accent);
+      transition: width 0.5s;
+    }
+    .form-field input:focus ~ .form-field-line,
+    .form-field textarea:focus ~ .form-field-line { width: 100%; }
+    .contact-btn {
+      display: flex; align-items: center; justify-content: space-between;
+      background: white; color: black;
+      padding: 24px 40px; border-radius: 16px;
+      font-weight: 700; font-size: 14px;
+      text-transform: uppercase; letter-spacing: 0.4em;
+      border: none; cursor: pointer; transition: background 0.3s;
+      font-family: 'Inter', sans-serif;
+    }
+    .contact-btn:hover { background: var(--neon); }
+    .contact-btn-icon {
+      width: 44px; height: 44px;
+      background: black; color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s;
+    }
+    .contact-btn:hover .contact-btn-icon { transform: rotate(45deg); }
+    .contact-btn-icon svg { width: 20px; height: 20px; stroke: currentColor; }
+
+    /* FOOTER */
+    footer {
+      margin-top: 128px; padding-top: 48px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      display: flex; flex-direction: column; align-items: center; gap: 32px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.3em;
+      color: #52525b;
+    }
+    @media (min-width: 768px) { footer { flex-direction: row; justify-content: space-between; } }
+    footer a { color: #52525b; text-decoration: none; transition: color 0.2s; }
+    footer a:hover { color: white; }
+    .footer-links { display: flex; gap: 48px; }
+
+    /* FLOATING BAR */
+    #float-bar {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+      z-index: 50;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px;
+      background: rgba(24,24,27,0.8);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 9999px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+      animation: slideUp 0.8s cubic-bezier(0.33,1,0.68,1) both;
+    }
+    @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); } to { transform: translateX(-50%) translateY(0); } }
+    .float-link {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 24px; border-radius: 9999px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.4em;
+      text-decoration: none; color: white;
+      transition: transform 0.2s;
+    }
+    .float-link:hover { transform: scale(1.05); }
+    .float-link.linkedin { background: #0077B5; }
+    .float-link.email { background: white; color: black; }
+    .float-link svg { width: 16px; height: 16px; stroke: currentColor; }
+
+    /* SCROLL REVEAL */
+    .reveal {
+      opacity: 0; transform: translateY(50px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+<!-- Custom Cursor -->
+<div id="cursor"></div>
+
+<!-- Navbar -->
+<nav>
+  <div class="nav-logo">MAYANK SINGH</div>
+  <div class="nav-links">
+    <a href="#impact">Impact</a>
+    <a href="#philosophy">Philosophy</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="nav-cta">
+    Let's Talk
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+  </a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-bg-text">STRATEGY ARCHITECT SYSTEMS AI</div>
+  <div class="hero-glow" style="top:25%;left:25%;width:500px;height:500px;"></div>
+  <div class="hero-glow" style="bottom:25%;right:25%;width:500px;height:500px;opacity:0.1;"></div>
+
+  <div class="hero-content">
+    <div>
+      <div class="hero-eyebrow">
+        <span>Sr Manager</span>
+        <span class="slash">/</span>
+        <span>People Architect</span>
+      </div>
+      <h1 class="hero-title">
+        I am <span class="accent">Mayank Singh</span> — a People Architect bridging the gap between human empathy and predictive intelligence.
+      </h1>
+    </div>
+
+    <div class="hero-card">
+      <div class="hero-img-wrap">
+        <img src="https://i.ibb.co/wrKmPNS8/Gemini-Generated-Image-qag9deqag9deqag.png" alt="Mayank Singh" referrerpolicy="no-referrer" />
+        <div class="hero-img-overlay"></div>
+        <div class="hero-img-label-top">
+          <span>Built across</span>
+          <span>4 Global Orgs</span>
+        </div>
+        <div class="hero-img-label-bot">
+          <span>Expertise</span>
+          <span>HR × AI × Culture</span>
+        </div>
+      </div>
+      <div class="hero-deco-br"></div>
+      <div class="hero-deco-tl"></div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-line"><div class="scroll-line-inner"></div></div>
+    <span>Scroll to Explore</span>
+  </div>
+</section>
+
+<!-- Philosophy -->
+<section class="philosophy" id="philosophy">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Philosophy</span>
+      <h2 class="section-title">From Management<br>to Architecture</h2>
+    </div>
+    <div class="philosophy-grid">
+      <div class="philosophy-card reveal reveal-delay-1">
+        <div class="philosophy-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+        </div>
+        <h3>Strategy over Support</h3>
+        <p>HR is not a support function; it is the core strategic engine that drives organizational velocity.</p>
+      </div>
+      <div class="philosophy-card reveal reveal-delay-2">
+        <div class="philosophy-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="7" height="7"></rect><rect x="15" y="3" width="7" height="7"></rect><rect x="2" y="14" width="7" height="7"></rect><rect x="15" y="14" width="7" height="7"></rect></svg>
+        </div>
+        <h3>Systems over Initiatives</h3>
+        <p>Employee experience is a complex system, not a series of isolated initiatives. It requires architectural precision.</p>
+      </div>
+      <div class="philosophy-card reveal reveal-delay-3">
+        <div class="philosophy-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="2" x2="9" y2="4"></line><line x1="15" y1="2" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="22"></line><line x1="15" y1="20" x2="15" y2="22"></line><line x1="20" y1="9" x2="22" y2="9"></line><line x1="20" y1="14" x2="22" y2="14"></line><line x1="2" y1="9" x2="4" y2="9"></line><line x1="2" y1="14" x2="4" y2="14"></line></svg>
+        </div>
+        <h3>Augmentation over Automation</h3>
+        <p>AI is not about replacing humans; it's about augmenting leadership decisions with predictive clarity.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Impact -->
+<section id="impact">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Impact & Achievements</span>
+    </div>
+
+    <div class="impact-item reveal">
+      <div>
+        <div class="impact-company">Innovaccer</div>
+        <h3 class="impact-title">Culture & AI Transformation</h3>
+      </div>
+      <div>
+        <p class="impact-desc">Architecting a proactive, AI-driven HR culture to shift from reactive support to strategic foresight.</p>
+        <div class="impact-points">
+          <div class="impact-point"><div class="impact-dot"></div><p>Introduced AI to HR systems to enable predictive workforce intelligence.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Built a culture of proactiveness, moving away from reactive counter-offers.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Designed systems that empower leaders with real-time engagement and attrition insights.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Transformed HR into a strategic engine for culture building and talent architecture.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-item reveal">
+      <div>
+        <div class="impact-company">Ernst and Young</div>
+        <h3 class="impact-title">Orchestrated Scale</h3>
+      </div>
+      <div>
+        <p class="impact-desc">Orchestrated HR strategy at scale across 1200+ employees with precision.</p>
+        <div class="impact-points">
+          <div class="impact-point"><div class="impact-dot"></div><p>Built structured forums to drive cadence and cross-functional collaboration.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Enabled resource optimization through data-backed workforce visibility.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Contributed to flagship Leadership Symposium and Career Watch programs.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Strengthened organizational rhythm and leadership decision-making.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-item reveal">
+      <div>
+        <div class="impact-company">TaskUs</div>
+        <h3 class="impact-title">DEI and CSR Roadmap</h3>
+      </div>
+      <div>
+        <p class="impact-desc">Institutionalized inclusive culture through scalable diversity infrastructure.</p>
+        <div class="impact-points">
+          <div class="impact-point"><div class="impact-dot"></div><p>Built and launched LGBTQ+ Employee Resource Group.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Led hiring initiatives for specially-abled talent globally.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Established long-term partnerships for CSR & inclusion programs.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Designed initiatives that operate as embedded cultural systems.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-item reveal">
+      <div>
+        <div class="impact-company">Hitachi</div>
+        <h3 class="impact-title">Global Learning Ecosystems</h3>
+      </div>
+      <div>
+        <p class="impact-desc">Scaled learning infrastructure and built global HR capability frameworks.</p>
+        <div class="impact-points">
+          <div class="impact-point"><div class="impact-dot"></div><p>Led L&D across India, APAC, and US regions.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Key role in setting up the Global Business Services (GBS) function.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Built leadership capability frameworks aligned to business outcomes.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Enabled enterprise-wide learning transformation at scale.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="impact-item reveal">
+      <div>
+        <div class="impact-company">Teleperformance</div>
+        <h3 class="impact-title">Circle of Excellence</h3>
+      </div>
+      <div>
+        <p class="impact-desc">Driving performance culture through strategic KPI formulation and rewards architecture.</p>
+        <div class="impact-points">
+          <div class="impact-point"><div class="impact-dot"></div><p>Focused on precise KPI formulation to align individual performance with business goals.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Managed the 'Circle of Excellence' rewards program to institutionalize high performance.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Led strategic learning and development initiatives to design targeted interventions.</p></div>
+          <div class="impact-point"><div class="impact-dot"></div><p>Optimized workforce productivity through data-driven performance frameworks.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Timeline -->
+<section class="timeline-bg">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Timeline</span>
+      <h2 class="section-title">The Journey</h2>
+    </div>
+    <div class="timeline" style="margin-top:96px;">
+      <div class="timeline-line"></div>
+      <div class="timeline-items">
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Jan 2025 — Present</span>
+            <div class="timeline-company">Innovaccer</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">Sr Manager</div>
+            <p class="timeline-desc">Driving performance management, spearheading AI-led HR initiatives, and shaping strategic talent engagement while partnering with business leaders to enable workforce success across a 500-employee ecosystem.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item even reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Mar 2023 — Jan 2025</span>
+            <div class="timeline-company">Ernst and Young India</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">Manager – HR Business Partner</div>
+            <p class="timeline-desc">Managing 1200+ employees across 4 service lines, focusing on employee relations and performance cycles.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Jul 2022 — Mar 2023</span>
+            <div class="timeline-company">TaskUs India</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">Manager – Lead DEI and CSR</div>
+            <p class="timeline-desc">Architecting the Diversity, Equity & Inclusion agenda and executing global CSR programs.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item even reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Jul 2019 — Jun 2022</span>
+            <div class="timeline-company">Hitachi India</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">Manager – Human Resource</div>
+            <p class="timeline-desc">Leading Employee Services and L&D across India, America, and Asia regions.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Dec 2015 — Jul 2019</span>
+            <div class="timeline-company">Teleperformance India</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">Deputy Manager – Leadership Assessment & Development</div>
+            <p class="timeline-desc">Managing the Circle of Excellence rewards program and defining strategic KPIs.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item even reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Feb 2015 — Dec 2015</span>
+            <div class="timeline-company">V Care Call Centers India</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">HR Coordinator</div>
+            <p class="timeline-desc">Managing the entire gamut of HR and end-to-end recruitment for assigned positions.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-left">
+            <span class="timeline-year">Jun 2014 — Feb 2015</span>
+            <div class="timeline-company">Recplus Consulting</div>
+          </div>
+          <div class="timeline-right">
+            <div class="timeline-role">HR Recruiter</div>
+            <p class="timeline-desc">Managing the entire interview process and increasing retention through behavioral prescreening.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Transformations -->
+<section class="transformations-bg">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Transformations</span>
+      <h2 class="section-title">Signature Work</h2>
+    </div>
+    <div class="transform-list">
+
+      <div class="transform-item">
+        <div class="transform-bg-text">AI-Driven Retention</div>
+        <div class="transform-item-body">
+          <h3>AI-Driven Retention</h3>
+          <p>Shifting from reactive counter-offers to predictive workforce intelligence.</p>
+        </div>
+        <div class="transform-outcome">
+          <span class="transform-outcome-label">Outcome</span>
+          <p>Reduced attrition by 40% through early intervention systems.</p>
+        </div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-bg-text">Performance Engineering</div>
+        <div class="transform-item-body">
+          <h3>Performance Engineering</h3>
+          <p>Creation of high-level KPIs that streamlined and objectified performance for a large workforce, building radical transparency.</p>
+        </div>
+        <div class="transform-outcome">
+          <span class="transform-outcome-label">Outcome</span>
+          <p>Aligned 20,000+ employee cohorts with clear, data-backed organizational objectives.</p>
+        </div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-bg-text">Leadership Upskilling</div>
+        <div class="transform-item-body">
+          <h3>Leadership Upskilling</h3>
+          <p>Strategizing and introducing internal/external leadership programs designed to upskill the workforce for future-ready roles.</p>
+        </div>
+        <div class="transform-outcome">
+          <span class="transform-outcome-label">Outcome</span>
+          <p>Bridged critical skill gaps and enhanced leadership capabilities across global regions.</p>
+        </div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-bg-text">DEI Architecture</div>
+        <div class="transform-item-body">
+          <h3>DEI Architecture</h3>
+          <p>Building scalable inclusion frameworks that operate as cultural systems.</p>
+        </div>
+        <div class="transform-outcome">
+          <span class="transform-outcome-label">Outcome</span>
+          <p>Launched ERGs and inclusive hiring pipelines across 3 continents.</p>
+        </div>
+      </div>
+
+      <div class="transform-item">
+        <div class="transform-bg-text">Leadership Ecosystems</div>
+        <div class="transform-item-body">
+          <h3>Leadership Ecosystems</h3>
+          <p>Designing capability frameworks that align leadership to business outcomes.</p>
+        </div>
+        <div class="transform-outcome">
+          <span class="transform-outcome-label">Outcome</span>
+          <p>Enabled 1200+ leaders with data-backed decision visibility.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Capabilities -->
+<section class="capabilities-bg">
+  <div class="cap-glow"></div>
+  <div class="section-inner" style="text-align:center;">
+    <div class="reveal">
+      <span class="section-label">Strategic Capabilities</span>
+      <h2 class="section-title">What I Build</h2>
+    </div>
+    <div class="cap-grid">
+      <div class="cap-card reveal">
+        <div>
+          <div class="cap-number">01</div>
+          <div class="cap-title">Digital HR & Predictive Intelligence</div>
+        </div>
+        <p class="cap-desc">Leveraging AI systems for transactional automation and Pulse for predictive analysis to move from reactive to proactive leadership.</p>
+        <div class="cap-line"></div>
+      </div>
+      <div class="cap-card reveal reveal-delay-1">
+        <div>
+          <div class="cap-number">02</div>
+          <div class="cap-title">Organizational Architecture & GBS</div>
+        </div>
+        <p class="cap-desc">Expert in setting up Global Business Services and centralized HR/L&D functions across diverse regions including India, America, and Asia.</p>
+        <div class="cap-line"></div>
+      </div>
+      <div class="cap-card reveal reveal-delay-2">
+        <div>
+          <div class="cap-number">03</div>
+          <div class="cap-title">Performance Engineering & KPI Formulation</div>
+        </div>
+        <p class="cap-desc">Specialized in formulating high-level KPIs and performance dashboards that align 20,000+ employee cohorts with organizational objectives.</p>
+        <div class="cap-line"></div>
+      </div>
+      <div class="cap-card reveal reveal-delay-3">
+        <div>
+          <div class="cap-number">04</div>
+          <div class="cap-title">DE&I & Cultural Transformation</div>
+        </div>
+        <p class="cap-desc">A proven track record of building inclusive cultures, from founding LGBTQ+ ERGs to implementing national Diversity and Inclusion agendas.</p>
+        <div class="cap-line"></div>
+      </div>
+      <div class="cap-card reveal reveal-delay-4">
+        <div>
+          <div class="cap-number">05</div>
+          <div class="cap-title">Strategic Talent Management</div>
+        </div>
+        <p class="cap-desc">Managing the full employee lifecycle for massive cohorts, focusing on high-potential identification and succession planning to drive the bottom line.</p>
+        <div class="cap-line"></div>
+      </div>
+      <div class="cap-card reveal reveal-delay-1">
+        <div>
+          <div class="cap-number">06</div>
+          <div class="cap-title">L&D Strategy & Executive Coaching</div>
+        </div>
+        <p class="cap-desc">Leading the entire assessment and leadership development function to bridge critical skill gaps and enhance leadership capabilities.</p>
+        <div class="cap-line"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Education -->
+<section class="education-bg" id="education">
+  <div class="section-inner">
+    <div class="reveal">
+      <span class="section-label">Academic Foundation</span>
+      <h2 class="section-title">Education</h2>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <span class="edu-year">2020 — 2021</span>
+        <div class="edu-institution">IIM Trichy</div>
+        <div class="edu-degree">PGDM Strategic Human Resource Management</div>
+        <p class="edu-desc">Advanced specialization in strategic workforce planning and organizational behavior.</p>
+      </div>
+      <div class="edu-card reveal reveal-delay-1">
+        <span class="edu-year">2016 — 2018</span>
+        <div class="edu-institution">Narsee Monjee Institute of Management Studies</div>
+        <div class="edu-degree">PGDHRM</div>
+        <p class="edu-desc">Post Graduate Diploma in Human Resource Management.</p>
+      </div>
+      <div class="edu-card reveal reveal-delay-2">
+        <span class="edu-year">2014</span>
+        <div class="edu-institution">Jodhpur National University</div>
+        <div class="edu-degree">Bachelor of Commerce (B.com)</div>
+        <p class="edu-desc">Foundational business and commerce education.</p>
+      </div>
+      <div class="edu-card reveal reveal-delay-3">
+        <span class="edu-year">2012</span>
+        <div class="edu-institution">CBSE Board</div>
+        <div class="edu-degree">Senior Secondary School</div>
+        <p class="edu-desc">Completed secondary education with a focus on commerce.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recommendations -->
+<section class="recs-bg">
+  <div class="section-inner" style="text-align:center;">
+    <div class="reveal">
+      <span class="section-label">Testimonials</span>
+      <h2 class="section-title">Voices of Impact</h2>
+    </div>
+    <div class="recs-grid" style="text-align:left;">
+      <div class="rec-card reveal">
+        <div>
+          <div class="rec-dots"><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div></div>
+          <p class="rec-text">"Mayank was my HR Business partner at EY India and supported our client technology team across all its HR needs. Mayank was very pro-active, extremely pleasant to work with and thoroughly professional in his planning, execution and delivery."</p>
+        </div>
+        <div>
+          <div class="rec-name">Srinath Subrahmanyan</div>
+          <div class="rec-role">Global leader in Product and Technology Management, Ernst and Young</div>
+        </div>
+      </div>
+      <div class="rec-card reveal reveal-delay-1">
+        <div>
+          <div class="rec-dots"><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div></div>
+          <p class="rec-text">"Mayank is quite intelligent, proactive and future oriented person. He drove some good initiatives during his tenure. I am fully confident that Mayank's dedication towards his profession and execution mind set will take him to top."</p>
+        </div>
+        <div>
+          <div class="rec-name">Ashutosh Anshu</div>
+          <div class="rec-role">Board of Director and CHRO, Hitachi India</div>
+        </div>
+      </div>
+      <div class="rec-card reveal">
+        <div>
+          <div class="rec-dots"><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div></div>
+          <p class="rec-text">"Ridiculously passionate is what describes him the best. Skills that we acquire over years of experience, came naturally to Mayank. Had the opportunity to have him not only as a team member but he had been an asset all along."</p>
+        </div>
+        <div>
+          <div class="rec-name">Puneeta Rajwant</div>
+          <div class="rec-role">Director Human Resource, Teleperformance India</div>
+        </div>
+      </div>
+      <div class="rec-card reveal reveal-delay-1">
+        <div>
+          <div class="rec-dots"><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div><div class="rec-dot"></div></div>
+          <p class="rec-text">"Mayank reported to me in his role as DEI/CSR leader for India. He hit the ground running from day one, and brought great value to the team with his insightful perspectives. Mayank is action-oriented and passionate about social inclusion."</p>
+        </div>
+        <div>
+          <div class="rec-name">Ana Marfil</div>
+          <div class="rec-role">Director, TaskUs India</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div>
+        <div class="reveal">
+          <h2 class="contact-title">Let's Build<br>the Future</h2>
+          <p class="contact-sub">I collaborate with leaders and organizations shaping the next era of workforce intelligence.</p>
+        </div>
+        <div class="contact-socials reveal">
+          <a href="https://www.linkedin.com/in/mayanksingh0070/" target="_blank" rel="noopener noreferrer" class="contact-social">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          </a>
+          <a href="mailto:thakurmayanksingh@yahoo.co.in" class="contact-social">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-form reveal">
+        <div class="form-field">
+          <input type="text" placeholder="Your Name" />
+          <div class="form-field-line"></div>
+        </div>
+        <div class="form-field">
+          <input type="email" placeholder="Your Email" />
+          <div class="form-field-line"></div>
+        </div>
+        <div class="form-field">
+          <textarea rows="4" placeholder="What are you building?"></textarea>
+          <div class="form-field-line"></div>
+        </div>
+        <button class="contact-btn" onclick="alert('Message sent! Mayank will be in touch.')">
+          Start a Conversation
+          <div class="contact-btn-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      <div>© 2026 Mayank Singh. All Rights Reserved.</div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div>Built with AI Studio</div>
+    </footer>
+  </div>
+</section>
+
+<!-- Floating Bar -->
+<div id="float-bar">
+  <a href="https://www.linkedin.com/in/mayanksingh0070/" target="_blank" rel="noopener noreferrer" class="float-link linkedin">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+    LinkedIn
+  </a>
+  <a href="mailto:thakurmayanksingh@yahoo.co.in" class="float-link email">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="black"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+    Email Me
+  </a>
+</div>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  let cx = 0, cy = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+  document.addEventListener('mouseover', e => {
+    const tag = e.target.tagName;
+    if (tag === 'A' || tag === 'BUTTON') cursor.classList.add('hovering');
+    else cursor.classList.remove('hovering');
+  });
+  function animateCursor() {
+    cx += (tx - cx) * 0.15;
+    cy += (ty - cy) * 0.15;
+    cursor.style.left = cx + 'px';
+    cursor.style.top = cy + 'px';
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+
+  // Scroll Reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Parallax hero bg text
+  const heroBgText = document.querySelector('.hero-bg-text');
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (heroBgText) heroBgText.style.transform = `translateY(-50%) translateX(${y * 0.4}px)`;
+  });
+</script>
+</body>
+</html>
