@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovaccer HQ - Meet the Team</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; background:#000; }
+  #canvas-container { width:100vw; height:100vh; position:relative; }
+
+  #ui-overlay {
+    position:absolute; top:16px; left:16px; color:#fff;
+    background:rgba(13,71,161,0.85); padding:14px 18px;
+    border-radius:12px; backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.2); max-width:240px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  }
+  #ui-overlay h2 { font-size:15px; font-weight:700; letter-spacing:.5px; margin-bottom:2px; }
+  #ui-overlay .tagline { font-size:11px; opacity:.7; margin-bottom:10px; border-bottom:1px solid rgba(255,255,255,.2); padding-bottom:8px; }
+  #ui-overlay p { font-size:12px; opacity:.85; margin:3px 0; }
+  #ui-overlay .tip { font-size:11px; opacity:.6; margin-top:8px; border-top:1px solid rgba(255,255,255,.2); padding-top:8px; }
+
+  #logo-badge {
+    position:absolute; top:16px; right:16px;
+    background:#fff; border-radius:10px;
+    padding:8px 14px; box-shadow:0 2px 12px rgba(0,0,0,.3);
+    display:flex; align-items:center; gap:8px;
+  }
+  #logo-badge .logo-text { font-size:18px; font-weight:800; color:#0D47A1; letter-spacing:-0.5px; }
+  #logo-badge .logo-dot { width:8px; height:8px; background:#E53935; border-radius:50%; }
+
+  #dialogue-box {
+    position:absolute; bottom:16px; left:50%; transform:translateX(-50%);
+    background:#fff; color:#222; padding:20px 24px;
+    border-radius:16px; max-width:640px; width:92%;
+    display:none; box-shadow:0 8px 40px rgba(0,0,0,.35);
+    border-top:4px solid #0D47A1; max-height:85vh; overflow-y:auto;
+  }
+  #dialogue-box h3 { margin:0 0 4px; color:#0D47A1; font-size:16px; }
+  #dialogue-box .role-tag { font-size:11px; color:#E53935; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; }
+  #dialogue-content { line-height:1.6; max-height:180px; overflow-y:auto; font-size:14px; }
+  #dialogue-content p { margin:6px 0; }
+  #dialogue-content strong { color:#0D47A1; }
+
+  .dialogue-option {
+    background:#F5F7FF; border:1.5px solid #0D47A1;
+    padding:10px 14px; margin:6px 0; border-radius:8px;
+    cursor:pointer; transition:all .25s; font-size:13px; color:#222;
+  }
+  .dialogue-option:hover { background:#0D47A1; color:#fff; transform:translateX(4px); }
+
+  #support-bar {
+    margin-top:14px; padding-top:12px; border-top:1px solid #eee;
+    font-size:12px; color:#555;
+  }
+  #support-bar a { color:#0D47A1; text-decoration:none; font-weight:600; }
+  #support-bar a:hover { text-decoration:underline; }
+
+  #custom-q-wrap { margin-top:14px; padding-top:12px; border-top:1px solid #eee; }
+  #custom-q-wrap p { font-size:12px; color:#888; text-align:center; margin-bottom:6px; }
+  #custom-question-input {
+    width:100%; padding:9px 12px; border:1.5px solid #0D47A1;
+    border-radius:8px; font-size:13px; font-family:inherit; outline:none;
+  }
+  #custom-question-submit {
+    background:#0D47A1; color:#fff; border:none;
+    padding:9px 18px; border-radius:8px; margin-top:6px;
+    cursor:pointer; font-size:13px; transition:all .25s; font-weight:600;
+  }
+  #custom-question-submit:hover { background:#1565C0; transform:translateY(-1px); }
+  #custom-question-submit:disabled { background:#aaa; cursor:not-allowed; transform:none; }
+
+  .loading {
+    display:inline-block; width:16px; height:16px;
+    border:2.5px solid rgba(13,71,161,.25);
+    border-radius:50%; border-top-color:#0D47A1;
+    animation:spin 1s linear infinite; vertical-align:middle;
+  }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  #interaction-prompt {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(13,71,161,.9); color:#fff;
+    padding:10px 20px; border-radius:20px; display:none;
+    font-size:13px; font-weight:600; pointer-events:none;
+    box-shadow:0 2px 12px rgba(0,0,0,.3);
+  }
+
+  .floating-text {
+    position:absolute; color:#FFD600; font-size:22px;
+    font-weight:800; pointer-events:none;
+    animation:floatUp 2s ease-out forwards;
+    text-shadow:1px 1px 4px rgba(0,0,0,.7);
+  }
+  @keyframes floatUp {
+    0% { opacity:1; transform:translateY(0); }
+    100% { opacity:0; transform:translateY(-80px); }
+  }
+
+  #close-btn {
+    float:right; background:none; border:none; cursor:pointer;
+    font-size:18px; color:#aaa; line-height:1; margin-top:-4px;
+  }
+  #close-btn:hover { color:#E53935; }
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+
+<div id="ui-overlay">
+  <h2>🏥 Innovaccer HQ</h2>
+  <p class="tagline">Agentic Cloud for Healthcare</p>
+  <p>WASD — move</p>
+  <p>Arrow keys — look</p>
+  <p>E — talk to someone</p>
+  <p>Space — dance</p>
+  <p>ESC — close dialog</p>
+  <p class="tip">💡 Walk up to a team member and press E</p>
+</div>
+
+<div id="logo-badge">
+  <span class="logo-text">innovaccer</span>
+  <span class="logo-dot"></span>
+</div>
+
+<div id="dialogue-box">
+  <button id="close-btn" onclick="closeDialogue()">✕</button>
+  <h3 id="dialogue-name">Name</h3>
+  <div class="role-tag" id="dialogue-role">Role</div>
+  <div id="dialogue-content">Content</div>
+  <div id="dialogue-options"></div>
+  <div id="support-bar"></div>
+  <div id="custom-q-wrap">
+    <p>── Ask your own question ──</p>
+    <input type="text" id="custom-question-input" placeholder="e.g. 'How does Gravity platform work?'" maxlength="200">
+    <button id="custom-question-submit">Ask Question</button>
+  </div>
+</div>
+
+<div id="interaction-prompt">Press E to talk</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── Team Data ───────────────────────────────────────────────────
+const TEAM = [
+  {
+    name: 'Abhinav Shashank',
+    role: 'Co-Founder & CEO',
+    email: 'abhinav@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/abhinavshashank/',
+    shirt: 0x0D47A1, hair: 0x2c2c2c,
+    personality: 'visionary and driven',
+    quirk: 'compares every problem to healthcare data fragmentation',
+    bio: 'IIT Kharagpur alum who co-founded Innovaccer in 2014. First built on Harvard & Wharton research. Led company from Disney/NASA clients to a $3.45B healthcare AI unicorn.'
+  },
+  {
+    name: 'Sandeep Gupta',
+    role: 'Co-Founder & COO',
+    email: 'sandeep@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/9sandeepg/',
+    shirt: 0x1565C0, hair: 0x3d2b1f,
+    personality: 'operational and strategic',
+    quirk: 'thinks about orchestration even during lunch',
+    bio: 'IIM Ahmedabad MBA and Co-Founder. Runs day-to-day operations and keeps Innovaccer scaling. Previously at Microsoft & Ingersoll Rand. Drives the autonomous healthcare vision.'
+  },
+  {
+    name: 'Ankit Maheshwari',
+    role: 'CTO & President, India Operations',
+    email: 'ankit@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/ankit-mah/',
+    shirt: 0x1976D2, hair: 0x1a1a1a,
+    personality: 'deeply technical and energetic',
+    quirk: 'has been building Innovaccer since before it had a name',
+    bio: 'Founding team member and CTO. MIT CSAIL alumni. Leads all of R&D and India Operations. The engineering backbone of Gravity, Innovaccer\'s Healthcare Intelligence Platform.'
+  },
+  {
+    name: 'Madhu Palkar',
+    role: 'Chief Customer Officer',
+    email: 'madhu.palkar@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/madhupalkar/',
+    shirt: 0x6A1B9A, hair: 0x4a2c5e,
+    personality: 'customer-centric and analytical',
+    quirk: 'frames every internal meeting around the customer\'s journey',
+    bio: 'Kellogg MBA. Chief Customer Officer at Innovaccer. Previously at UnitedHealth Group, Unified Women\'s Healthcare, and L.E.K. Consulting. Leads all of CS for 130+ health system clients.'
+  },
+  {
+    name: 'Satyajit M. Menon',
+    role: 'VP & Global Head, People Experience',
+    email: 'satyajit.menon@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/satyajitm/',
+    shirt: 0x00695C, hair: 0x2d1b00,
+    personality: 'people-first and outcome-focused',
+    quirk: 'says "People or Nothing" at least once a day',
+    bio: '20+ years in HR. Rejoined Innovaccer as Chief of Staff, now VP People Experience. Formerly CPO at PeopleStrong and HR roles at GE Capital, Snapdeal, Fidelity. Builds culture at scale.'
+  },
+  {
+    name: 'Mohd Saqib',
+    role: 'Head of Talent Management',
+    email: 'saqib@innovaccer.com',
+    linkedin: 'https://www.linkedin.com/in/mohd-saqib-5909318/',
+    shirt: 0xB71C1C, hair: 0x1a1a1a,
+    personality: 'people-first and pragmatic',
+    quirk: 'never says "we\'re hiring" — says "we\'re on a mission, join us"',
+    bio: 'IIM Calcutta EPHRM. Head of Talent Management at Innovaccer. Previously at Snapdeal and Fareportal. Built Innovaccer\'s hiring engine from early-stage to 1,600+ employees globally.'
+  }
+];
+
+// ─── Scene Setup ─────────────────────────────────────────────────
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xEEF2FF);
+scene.fog = new THREE.Fog(0xEEF2FF, 15, 55);
+
+const camera = new THREE.PerspectiveCamera(72, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 1.6, 8);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+// Lighting
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const sun = new THREE.DirectionalLight(0xfff8e1, 0.6);
+sun.position.set(8, 18, 10); sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+['near','far','left','right','top','bottom'].forEach((k,i)=>sun.shadow.camera[k]=[0.1,60,-30,30,30,-30][i]);
+scene.add(sun);
+
+// Point lights for warmth
+[[-15,4,-15],[15,4,-15],[0,4,15]].forEach(([x,y,z])=>{
+  const pl = new THREE.PointLight(0x4488ff, 0.3, 20);
+  pl.position.set(x,y,z); scene.add(pl);
+});
+
+// ─── Floor ───────────────────────────────────────────────────────
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(50,50),
+  new THREE.MeshStandardMaterial({color:0xE8EEFF,roughness:.8,metalness:.05}));
+floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; scene.add(floor);
+
+// Tiles
+const t1 = new THREE.MeshStandardMaterial({color:0xDDE3FF});
+const t2 = new THREE.MeshStandardMaterial({color:0xEEF2FF});
+for(let x=-22;x<22;x+=2) for(let z=-22;z<22;z+=2){
+  const tile = new THREE.Mesh(new THREE.PlaneGeometry(2,2),((x+z)/2)%2===0?t1:t2);
+  tile.position.set(x+1,.005,z+1); tile.rotation.x=-Math.PI/2; tile.receiveShadow=true; scene.add(tile);
+}
+
+// ─── Walls ───────────────────────────────────────────────────────
+const wallMat = new THREE.MeshStandardMaterial({color:0xF0F4FF,roughness:.9});
+const winMat = new THREE.MeshStandardMaterial({color:0xB3D4FF,transparent:true,opacity:.35,roughness:.05,metalness:.4});
+const wallDefs = [
+  {pos:[0,5,-22],rot:[0,0,0],size:[44,10]},
+  {pos:[-22,5,0],rot:[0,Math.PI/2,0],size:[44,10]},
+  {pos:[22,5,0],rot:[0,-Math.PI/2,0],size:[44,10]},
+];
+wallDefs.forEach(({pos,rot,size})=>{
+  const w=new THREE.Mesh(new THREE.PlaneGeometry(...size),wallMat);
+  w.position.set(...pos); w.rotation.set(...rot); w.receiveShadow=true; scene.add(w);
+});
+// Windows on back wall
+for(let x=-15;x<=15;x+=10){
+  const win=new THREE.Mesh(new THREE.PlaneGeometry(5,3.5),winMat);
+  win.position.set(x,5,-21.9); scene.add(win);
+}
+
+// ─── Ceiling accent strip (Innovaccer blue) ───────────────────────
+const ceilStrip = new THREE.Mesh(new THREE.BoxGeometry(44,0.3,2),
+  new THREE.MeshStandardMaterial({color:0x0D47A1,roughness:.5,metalness:.2,emissive:0x0D47A1,emissiveIntensity:.2}));
+ceilStrip.position.set(0,9.9,-21); scene.add(ceilStrip);
+
+// ─── Materials ───────────────────────────────────────────────────
+const wood = new THREE.MeshStandardMaterial({color:0x8B6914,roughness:.6,metalness:.1});
+const metal = new THREE.MeshStandardMaterial({color:0x505050,roughness:.3,metalness:.8});
+const darkGrey = new THREE.MeshStandardMaterial({color:0x2c3e50});
+
+// ─── Desk factory ────────────────────────────────────────────────
+function makeDesk(x,z,rotY=0){
+  const g=new THREE.Group();
+  const top=new THREE.Mesh(new THREE.BoxGeometry(3.2,.1,1.6),wood);
+  top.position.y=.78; top.castShadow=true; g.add(top);
+  [[-1.5,.39,-.75],[1.5,.39,-.75],[-1.5,.39,.75],[1.5,.39,.75]].forEach(p=>{
+    const leg=new THREE.Mesh(new THREE.BoxGeometry(.06,.75,.06),metal); leg.position.set(...p); g.add(leg);
+  });
+  // Monitor
+  const monBase=new THREE.Mesh(new THREE.CylinderGeometry(.12,.14,.06,12),metal); monBase.position.set(0,.84,0); g.add(monBase);
+  const monStand=new THREE.Mesh(new THREE.BoxGeometry(.05,.28,.05),metal); monStand.position.set(0,.97,0); g.add(monStand);
+  const monScreen=new THREE.Mesh(new THREE.BoxGeometry(1.3,.76,.06),
+    new THREE.MeshStandardMaterial({color:0x050505,roughness:.1,metalness:.6,emissive:0x001133,emissiveIntensity:.3}));
+  monScreen.position.set(0,1.35,0); g.add(monScreen);
+  const kb=new THREE.Mesh(new THREE.BoxGeometry(.45,.025,.18),metal); kb.position.set(0,.82,.32); g.add(kb);
+  const mouse=new THREE.Mesh(new THREE.BoxGeometry(.08,.02,.12),metal); mouse.position.set(.28,.82,.28); g.add(mouse);
+  // Chair
+  const seat=new THREE.Mesh(new THREE.BoxGeometry(.56,.07,.56),darkGrey); seat.position.set(0,.52,.85); g.add(seat);
+  const back=new THREE.Mesh(new THREE.BoxGeometry(.56,.65,.07),darkGrey); back.position.set(0,.85,1.1); g.add(back);
+  g.position.set(x,0,z); g.rotation.y=rotY;
+  return g;
+}
+
+// Place desks
+const deskPositions=[
+  [-10,-12,0],[0,-12,0],[10,-12,0],
+  [-10,-2,Math.PI],[-2,-2,Math.PI],[8,-2,Math.PI]
+];
+deskPositions.forEach(([x,z,r])=>scene.add(makeDesk(x,z,r)));
+
+// ─── Whiteboard ──────────────────────────────────────────────────
+const wbFrame=new THREE.Mesh(new THREE.BoxGeometry(6.4,3.4,.15),
+  new THREE.MeshStandardMaterial({color:0x0D47A1,roughness:.4,metalness:.3}));
+wbFrame.position.set(0,4,-21.8); scene.add(wbFrame);
+const wb=new THREE.Mesh(new THREE.BoxGeometry(6,.3,0.2),
+  new THREE.MeshStandardMaterial({color:0xfafafa,roughness:.15}));
+wb.position.set(0,3.9,-21.7); scene.add(wb);
+// "INNOVACCER" text on board via canvas texture
+const wbCanvas=document.createElement('canvas'); wbCanvas.width=512; wbCanvas.height=256;
+const wbCtx=wbCanvas.getContext('2d');
+wbCtx.fillStyle='#fafafa'; wbCtx.fillRect(0,0,512,256);
+wbCtx.fillStyle='#0D47A1'; wbCtx.font='bold 52px Arial'; wbCtx.textAlign='center';
+wbCtx.fillText('INNOVACCER',256,80);
+wbCtx.fillStyle='#E53935'; wbCtx.font='bold 26px Arial';
+wbCtx.fillText('Agentic Cloud for Healthcare',256,130);
+wbCtx.fillStyle='#555'; wbCtx.font='18px Arial';
+wbCtx.fillText('Founded 2014 · San Francisco · $3.45B Valuation',256,170);
+const wbTex=new THREE.CanvasTexture(wbCanvas);
+const wbSurface=new THREE.Mesh(new THREE.PlaneGeometry(5.8,3),
+  new THREE.MeshStandardMaterial({map:wbTex,roughness:.2}));
+wbSurface.position.set(0,4.05,-21.65); scene.add(wbSurface);
+
+// ─── Plants ──────────────────────────────────────────────────────
+function makePlant(x,z){
+  const pot=new THREE.Mesh(new THREE.CylinderGeometry(.25,.2,.45,8),
+    new THREE.MeshStandardMaterial({color:0x795548})); pot.position.set(x,.22,z); scene.add(pot);
+  const leaves=new THREE.Mesh(new THREE.SphereGeometry(.55,7,5),
+    new THREE.MeshStandardMaterial({color:0x2E7D32})); leaves.position.set(x,.85,z); scene.add(leaves);
+}
+[[-19,-17],[19,-17],[-19,0],[19,0],[0,18]].forEach(([x,z])=>makePlant(x,z));
+
+// ─── Coffee Station ──────────────────────────────────────────────
+const coffeeTable=new THREE.Mesh(new THREE.BoxGeometry(2.5,.85,1.1),wood);
+coffeeTable.position.set(-19,.42,12); coffeeTable.castShadow=true; scene.add(coffeeTable);
+const coffeeMachine=new THREE.Mesh(new THREE.BoxGeometry(.5,.6,.35),metal);
+coffeeMachine.position.set(-19,1.1,12); scene.add(coffeeMachine);
+// Red indicator light
+const redLight=new THREE.Mesh(new THREE.SphereGeometry(.05,6,6),
+  new THREE.MeshStandardMaterial({color:0xFF1744,emissive:0xFF1744,emissiveIntensity:.8}));
+redLight.position.set(-18.8,1.36,11.86); scene.add(redLight);
+
+// ─── Roomba ──────────────────────────────────────────────────────
+const roomba=new THREE.Mesh(new THREE.CylinderGeometry(.28,.28,.09,16),
+  new THREE.MeshStandardMaterial({color:0x0D47A1,roughness:.4,metalness:.3}));
+roomba.position.set(8,.045,6);
+roomba.userData={vel:new THREE.Vector3(.04,0,.03)};
+// Logo on roomba
+const rLabel=new THREE.Mesh(new THREE.CylinderGeometry(.18,.18,.005,16),
+  new THREE.MeshStandardMaterial({color:0xffffff})); rLabel.position.set(0,.055,0);
+roomba.add(rLabel); scene.add(roomba);
+
+// ─── Characters ──────────────────────────────────────────────────
+const characters=[];
+
+function makeChar(data, x, z){
+  const g=new THREE.Group();
+  const shirt=new THREE.MeshStandardMaterial({color:data.shirt});
+  const skin=new THREE.MeshStandardMaterial({color:0xffcba4});
+  const hairMat=new THREE.MeshStandardMaterial({color:data.hair});
+  const pant=new THREE.MeshStandardMaterial({color:0x1c2733});
+
+  const torso=new THREE.Mesh(new THREE.CylinderGeometry(.24,.29,.82,8),shirt);
+  torso.position.y=.62; torso.castShadow=true; g.add(torso);
+
+  const armGeo=new THREE.CylinderGeometry(.08,.08,.58,6);
+  const lArm=new THREE.Mesh(armGeo,shirt); lArm.position.set(-.31,.7,0); lArm.rotation.z=Math.PI/8; g.add(lArm);
+  const rArm=new THREE.Mesh(armGeo,shirt); rArm.position.set(.31,.7,0); rArm.rotation.z=-Math.PI/8; g.add(rArm);
+
+  const legGeo=new THREE.CylinderGeometry(.1,.1,.78,6);
+  const lLeg=new THREE.Mesh(legGeo,pant); lLeg.position.set(-.14,.39,0); g.add(lLeg);
+  const rLeg=new THREE.Mesh(legGeo,pant); rLeg.position.set(.14,.39,0); g.add(rLeg);
+
+  const head=new THREE.Mesh(new THREE.SphereGeometry(.24,8,6),skin);
+  head.position.y=1.23; head.castShadow=true; g.add(head);
+  const hairTop=new THREE.Mesh(new THREE.SphereGeometry(.26,8,6),hairMat);
+  hairTop.position.y=1.34; hairTop.scale.y=.55; g.add(hairTop);
+
+  const eyeGeo=new THREE.SphereGeometry(.03,4,4);
+  const eyeMat=new THREE.MeshStandardMaterial({color:0x111111});
+  const le=new THREE.Mesh(eyeGeo,eyeMat); le.position.set(-.08,1.24,.21); g.add(le);
+  const re=new THREE.Mesh(eyeGeo,eyeMat); re.position.set(.08,1.24,.21); g.add(re);
+
+  // Name label
+  const lc=document.createElement('canvas'); lc.width=320; lc.height=72;
+  const lx=lc.getContext('2d');
+  lx.fillStyle='rgba(13,71,161,0.92)'; lx.roundRect(0,0,320,72,10); lx.fill();
+  lx.fillStyle='#fff'; lx.font='bold 18px Arial'; lx.textAlign='center';
+  lx.fillText(data.name,160,24);
+  lx.fillStyle='rgba(255,255,255,.7)'; lx.font='13px Arial';
+  lx.fillText(data.role,160,44);
+  const lt=new THREE.CanvasTexture(lc);
+  const lbl=new THREE.Sprite(new THREE.SpriteMaterial({map:lt}));
+  lbl.position.y=1.82; lbl.scale.set(2.2,.5,1); g.add(lbl);
+
+  g.position.set(x,0,z);
+  g.userData={
+    ...data,
+    conversations:[], lArm, rArm,
+    initialPos:new THREE.Vector3(x,0,z),
+    targetPos:new THREE.Vector3(x,0,z),
+    moveTimer:0, isDancing:false, tripChance:.0008
+  };
+  characters.push(g);
+  return g;
+}
+
+// Position characters
+const positions=[[-10,-7],[0,-7],[10,-7],[-10,2],[0,2],[10,2]];
+TEAM.forEach((t,i)=>scene.add(makeChar(t,...positions[i])));
+
+// ─── Player ──────────────────────────────────────────────────────
+const player={pos:new THREE.Vector3(0,1.6,10), vel:new THREE.Vector3(), speed:.1, isDancing:false};
+const keys={};
+let mouseX=0;
+let currentChar=null, nearbyChar=null;
+
+// ─── DOM refs ────────────────────────────────────────────────────
+const dialogueBox=document.getElementById('dialogue-box');
+const dialogueName=document.getElementById('dialogue-name');
+const dialogueRole=document.getElementById('dialogue-role');
+const dialogueContent=document.getElementById('dialogue-content');
+const dialogueOptions=document.getElementById('dialogue-options');
+const supportBar=document.getElementById('support-bar');
+const interactionPrompt=document.getElementById('interaction-prompt');
+const customInput=document.getElementById('custom-question-input');
+const customSubmit=document.getElementById('custom-question-submit');
+
+function floatText(txt, wp){
+  const sp=wp.clone().project(camera);
+  const div=document.createElement('div');
+  div.className='floating-text';
+  div.textContent=txt;
+  div.style.left=((sp.x*.5+.5)*innerWidth)+'px';
+  div.style.top=((-.5*sp.y+.5)*innerHeight)+'px';
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),2000);
+}
+
+// ─── Keyboard / Mouse ────────────────────────────────────────────
+document.addEventListener('keydown',e=>{
+  if(document.activeElement===customInput){
+    if(e.key==='Escape') closeDialogue();
+    return;
+  }
+  keys[e.key]=true;
+  if(e.key.toLowerCase()==='e' && nearbyChar && dialogueBox.style.display!=='block'){ e.preventDefault(); openDialogue(nearbyChar); }
+  if(e.key===' ' && dialogueBox.style.display!=='block'){ e.preventDefault(); player.isDancing=true; floatText('💃🕺',player.pos); }
+  if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
+  if(e.key==='Escape') closeDialogue();
+});
+document.addEventListener('keyup',e=>{
+  if(document.activeElement===customInput) return;
+  keys[e.key]=false;
+  if(e.key===' ') player.isDancing=false;
+});
+document.addEventListener('mousemove',e=>{
+  if(document.pointerLockElement===renderer.domElement && dialogueBox.style.display!=='block')
+    mouseX+=e.movementX*.002;
+});
+renderer.domElement.addEventListener('click',()=>{
+  if(dialogueBox.style.display!=='block') renderer.domElement.requestPointerLock();
+});
+
+// ─── Dialogue ────────────────────────────────────────────────────
+function getQuestions(){
+  return [
+    'Tell me about Innovaccer\'s founding story',
+    'What is the Gravity platform?',
+    'How does Innovaccer help healthcare systems?',
+    'What\'s your role in the Customer Success team?',
+    'What keeps you motivated at Innovaccer?',
+    'What is value-based care?',
+    'How do you approach AI safety in healthcare?',
+    'What\'s the biggest challenge in health data unification?',
+    'How does Innovaccer use AI agents?',
+    'What makes your team culture unique?',
+    'What\'s a typical customer problem you solve?',
+    'What advice would you give a new hire?',
+    'How did Innovaccer reach unicorn status?',
+    'What is Constitutional AI in healthcare context?',
+    'How does Innovaccer handle data privacy (HIPAA)?',
+    'Tabs or spaces?',
+    'What\'s your go-to productivity hack?',
+    'What\'s your favorite thing about working here?',
+    'How do you celebrate customer wins?',
+    'If you weren\'t in healthcare tech, what would you do?'
+  ].sort(()=>Math.random()-.5).slice(0,4);
+}
+
+function openDialogue(char){
+  currentChar=char;
+  dialogueBox.style.display='block';
+  dialogueName.textContent=char.userData.name;
+  dialogueRole.textContent=char.userData.role;
+  if(document.pointerLockElement===renderer.domElement) document.exitPointerLock();
+
+  const greets=[
+    `Hey! I'm ${char.userData.name}. ${char.userData.bio}`,
+    `Hi there! I'm ${char.userData.name} — ${char.userData.role}. ${char.userData.quirk}. Ask me anything!`,
+    `Good to meet you! ${char.userData.name} here. I'm the kind of person who ${char.userData.quirk.toLowerCase()}.`,
+    `${char.userData.name}, ${char.userData.role}. Welcome to Innovaccer HQ! ${char.userData.bio}`
+  ];
+
+  if(!char.userData.conversations.length){
+    dialogueContent.innerHTML=`<p><strong>${char.userData.name}:</strong> ${greets[Math.floor(Math.random()*greets.length)]}</p>`;
+  } else {
+    const last=char.userData.conversations[char.userData.conversations.length-1];
+    dialogueContent.innerHTML=`<p><strong>You:</strong> ${last.user}</p><p><strong>${char.userData.name}:</strong> ${last.response}</p>`;
+  }
+
+  supportBar.innerHTML=`📧 Need support? Email <a href="mailto:${char.userData.email}">${char.userData.email}</a> | <a href="${char.userData.linkedin}" target="_blank">LinkedIn ↗</a>`;
+
+  dialogueOptions.innerHTML='';
+  getQuestions().forEach(q=>{
+    const d=document.createElement('div');
+    d.className='dialogue-option'; d.textContent=q;
+    d.onclick=()=>ask(q); dialogueOptions.appendChild(d);
+  });
+
+  customInput.value='';
+  setTimeout(()=>customInput.focus(),120);
+}
+
+function closeDialogue(){
+  dialogueBox.style.display='none'; currentChar=null;
+  if(document.pointerLockElement===renderer.domElement) document.exitPointerLock();
+}
+
+async function ask(question){
+  if(!currentChar) return;
+  dialogueContent.innerHTML+=`<p><strong>You:</strong> ${question}</p>`;
+  dialogueContent.innerHTML+=`<p><strong>${currentChar.userData.name}:</strong> <span class="loading"></span></p>`;
+  dialogueContent.scrollTop=dialogueContent.scrollHeight;
+  dialogueOptions.style.pointerEvents='none'; dialogueOptions.style.opacity='.5';
+  customInput.disabled=true; customSubmit.disabled=true;
+
+  let reply='';
+  try{
+    const prompt=`You are roleplaying as ${currentChar.userData.name}, ${currentChar.userData.role} at Innovaccer.
+Background: ${currentChar.userData.bio}
+Personality: ${currentChar.userData.personality}. Quirk: ${currentChar.userData.quirk}
+
+Innovaccer context: Healthcare AI company founded 2014. Mission: unify fragmented patient data. Products include Gravity (Healthcare Intelligence Platform), Atlas (population health), Flow (RCM automation). Raised $675M total, valued at $3.45B. Serves 130+ healthcare orgs including 7 of top 10 US health systems. 80M+ patient records unified.
+
+User question: "${question}"
+
+Respond as this character: warm, knowledgeable, slightly witty. Reference Innovaccer's real products/mission. 60-90 words max.
+Output ONLY valid JSON: {"response":"your answer here"}`;
+
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const txt=(data.content||[]).map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    reply=JSON.parse(txt).response;
+  } catch(e){ reply=fallback(currentChar, question); }
+
+  currentChar.userData.conversations.push({user:question,response:reply});
+  dialogueContent.innerHTML=dialogueContent.innerHTML.replace('<span class="loading"></span>',reply);
+  dialogueContent.scrollTop=dialogueContent.scrollHeight;
+  if(Math.random()<.25) floatText('💡',currentChar.position);
+
+  dialogueOptions.innerHTML='';
+  getQuestions().forEach(q=>{
+    const d=document.createElement('div'); d.className='dialogue-option'; d.textContent=q;
+    d.onclick=()=>ask(q); dialogueOptions.appendChild(d);
+  });
+  dialogueOptions.style.pointerEvents='auto'; dialogueOptions.style.opacity='1';
+  customInput.disabled=false; customSubmit.disabled=false; customInput.focus();
+}
+
+function fallback(char, q){
+  const ql=q.toLowerCase();
+  const bank={
+    'Abhinav Shashank':[
+      "Innovaccer started from a simple insight: a patient's data is scattered across dozens of systems and nobody stitches it together. We decided to fix that. From a Harvard research project to a $3.45B company — that journey still feels surreal.",
+      "Healthcare lived in a pre-internet era. No connected fabric of information existed. So we built Gravity to change that — unifying clinical, operational, and financial data at unprecedented scale.",
+      "Our mission is to make healthcare effective, accessible, and equitable. When you have 80 million patient records unified and 130+ health systems on the platform, you start to see what's possible."
+    ],
+    'Sandeep Gupta':[
+      "Running operations at a company scaling 50% year-over-year is like changing the engine of a plane mid-flight. It requires absolute orchestration across every team — and I love it.",
+      "The Agentic Cloud for Healthcare isn't just a tagline. It's our north star. AI agents that autonomously handle prior auth, coding, care management — that's what we're building.",
+      "COO life means making sure Abhinav's vision lands in the real world. From our SF HQ to our India ops, every team is rowing in the same direction."
+    ],
+    'Ankit Maheshwari':[
+      "As CTO, my job is to make sure our technology actually works at healthcare scale. Gravity processes data from Epic, Cerner, Meditech — hundreds of integrations — in real time. That's engineering at its most complex.",
+      "I've been building Innovaccer since the very beginning. Watching our platform grow from a prototype to something that holds 80M+ patient records is genuinely humbling.",
+      "The India engineering team is phenomenal. We have some of the sharpest minds I've worked with — MIT-calibre engineers solving healthcare's hardest problems."
+    ],
+    'Madhu Palkar':[
+      "Being CCO means I'm the voice of 130+ health systems inside Innovaccer. When a customer succeeds — reducing readmissions, closing care gaps — that's what makes the work matter.",
+      "Customer success in healthcare isn't just about renewals. It's about whether a care manager could reach a high-risk patient before they ended up in the ER. That's our north star.",
+      "My Kellogg strategy training taught me to think in systems. Healthcare is the most complex system there is — and Innovaccer is building the connective tissue it desperately needs."
+    ],
+    'Satyajit M. Menon':[
+      "People or Nothing — that's not a slogan, it's how I operate. Every policy, every process, every conversation has to serve the humans behind it.",
+      "Culture at Innovaccer is built on transparency and ownership. When 1,600+ people across SF, Plano, Delhi, and Bengaluru feel like one team — that's the magic of great people ops.",
+      "I came back to Innovaccer because the mission pulls you. You're not just building a product; you're building the infrastructure that makes healthcare less broken for millions of people."
+    ],
+    'Mohd Saqib':[
+      "We don't just hire for skills — we hire for mission alignment. When someone joins Innovaccer, they understand they're not just taking a job, they're entering a movement to fix healthcare.",
+      "Building a talent engine that scaled from early-stage to 1,600+ employees globally required reinventing how we think about recruiting. IIM Calcutta gave me the frameworks; Innovaccer gave me the battlefield.",
+      "The best part of my job? When I see someone I hired three years ago now leading a team of 20, transforming healthcare outcomes. That's the talent flywheel in action."
+    ]
+  };
+  const arr=bank[char.userData.name]||["At Innovaccer, we're on a mission to make healthcare truly data-driven. Every conversation, every tool, every line of code is in service of better patient outcomes."];
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+customSubmit.addEventListener('click',()=>{ const q=customInput.value.trim(); if(q&&currentChar){ask(q);customInput.value='';} });
+customInput.addEventListener('keypress',e=>{ if(e.key==='Enter'){const q=customInput.value.trim();if(q&&currentChar){ask(q);customInput.value='';}} });
+
+// ─── Character AI Movement ───────────────────────────────────────
+function updateChar(ch, dt){
+  if(Math.random()<ch.userData.tripChance && !ch.userData.isDancing){
+    ch.rotation.x=Math.PI/4; ch.position.y=.25;
+    floatText('Oops!',ch.position);
+    setTimeout(()=>{ch.rotation.x=0;ch.position.y=0;},900);
+    ch.userData.tripChance=0; setTimeout(()=>ch.userData.tripChance=.0008,5000);
+  }
+  if(ch===currentChar||ch.userData.isDancing){
+    if(ch===currentChar){ch.lookAt(new THREE.Vector3(player.pos.x,ch.position.y,player.pos.z));ch.rotation.x=0;ch.rotation.z=0;}
+    return;
+  }
+  if(Math.random()<.0008){ ch.userData.isDancing=true; floatText('🎵',ch.position); setTimeout(()=>ch.userData.isDancing=false,3500); }
+  ch.userData.moveTimer-=dt;
+  if(ch.userData.moveTimer<=0){
+    const a=Math.random()*Math.PI*2, d=2+Math.random()*5;
+    ch.userData.targetPos=new THREE.Vector3(
+      Math.max(-20,Math.min(20,ch.userData.initialPos.x+Math.cos(a)*d)),0,
+      Math.max(-20,Math.min(20,ch.userData.initialPos.z+Math.sin(a)*d)));
+    ch.userData.moveTimer=4+Math.random()*5;
+  }
+  const dir=new THREE.Vector3().subVectors(ch.userData.targetPos,ch.position); dir.y=0;
+  if(dir.length()>.1){
+    dir.normalize(); ch.position.addScaledVector(dir,.018);
+    ch.lookAt(ch.userData.targetPos); ch.rotation.x=0; ch.rotation.z=0;
+    ch.position.y=Math.abs(Math.sin(Date.now()*.006))*.04;
+  }
+}
+
+// ─── Animate ─────────────────────────────────────────────────────
+let lastT=0;
+function animate(t){
+  requestAnimationFrame(animate);
+  const dt=(t-lastT)/1000; lastT=t;
+
+  if(dialogueBox.style.display!=='block'){
+    if(keys['ArrowLeft']) mouseX+=.05;
+    if(keys['ArrowRight']) mouseX-=.05;
+    if(!player.isDancing){
+      camera.rotation.y=mouseX; camera.rotation.x=0;
+    }
+    const fwd=new THREE.Vector3(0,0,-1).applyQuaternion(camera.quaternion); fwd.y=0; fwd.normalize();
+    const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion); right.y=0; right.normalize();
+    if(keys['w']||keys['W']) player.pos.addScaledVector(fwd,player.speed);
+    if(keys['s']||keys['S']) player.pos.addScaledVector(fwd,-player.speed);
+    if(keys['a']||keys['A']) player.pos.addScaledVector(right,-player.speed);
+    if(keys['d']||keys['D']) player.pos.addScaledVector(right,player.speed);
+    player.pos.x=Math.max(-21,Math.min(21,player.pos.x));
+    player.pos.z=Math.max(-21,Math.min(21,player.pos.z));
+  }
+
+  if(player.isDancing && dialogueBox.style.display!=='block'){
+    camera.position.y=player.pos.y+Math.sin(Date.now()*.01)*.22;
+    camera.rotation.z=Math.sin(Date.now()*.01)*.1;
+    camera.rotation.y=mouseX; camera.rotation.x=0;
+  } else {
+    camera.position.copy(player.pos);
+    camera.rotation.z=0;
+    if(dialogueBox.style.display!=='block'){camera.rotation.y=mouseX;camera.rotation.x=0;}
+  }
+
+  characters.forEach(ch=>{
+    updateChar(ch,dt);
+    if(ch.userData.isDancing){
+      ch.rotation.y+=.1; ch.position.y=Math.abs(Math.sin(Date.now()*.01))*.28;
+      ch.userData.lArm.rotation.z=Math.sin(Date.now()*.01)*.5+Math.PI/8;
+      ch.userData.rArm.rotation.z=-Math.sin(Date.now()*.01)*.5-Math.PI/8;
+    }
+  });
+
+  // Roomba
+  roomba.rotation.y+=.05;
+  roomba.position.addScaledVector(roomba.userData.vel,1);
+  if(Math.abs(roomba.position.x)>20||Math.abs(roomba.position.z)>20){
+    roomba.userData.vel.multiplyScalar(-1); floatText('🏥',roomba.position);
+  }
+
+  // Nearby character
+  nearbyChar=null; let md=Infinity;
+  characters.forEach(ch=>{
+    const d=player.pos.distanceTo(ch.position);
+    if(d<3.2&&d<md){md=d;nearbyChar=ch;}
+  });
+  if(nearbyChar&&!currentChar){
+    interactionPrompt.style.display='block';
+    interactionPrompt.textContent=`Press E to talk to ${nearbyChar.userData.name}`;
+  } else { interactionPrompt.style.display='none'; }
+
+  renderer.render(scene,camera);
+}
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+animate(0);
+</script>
+</body>
+</html>
